@@ -187,7 +187,39 @@ uint8_t ring_buffer_peek(ring_buffer_t *buffer, char *data, ring_buffer_size_t i
     return 1;
 }
 
-extern inline uint8_t ring_buffer_is_empty(ring_buffer_t *buffer);
-extern inline uint8_t ring_buffer_is_full(ring_buffer_t *buffer);
-extern inline ring_buffer_size_t ring_buffer_num_items(ring_buffer_t *buffer);
-extern inline void ring_buffer_detach(ring_buffer_t **buffer);
+inline uint8_t ring_buffer_is_empty(ring_buffer_t *buffer)
+{
+    return (buffer->head_index == buffer->tail_index);
+}
+
+/**
+ * Returns whether a ring buffer is full.
+ * @param buffer The buffer for which it should be returned whether it is full.
+ * @return 1 if full; 0 otherwise.
+ */
+inline uint8_t ring_buffer_is_full(ring_buffer_t *buffer)
+{
+    return ((buffer->head_index - buffer->tail_index) & (buffer->buffer_cap - 1)) == (buffer->buffer_cap - 1);
+}
+
+/**
+ * Returns the number of items in a ring buffer.
+ * @param buffer The buffer for which the number of items should be returned.
+ * @return The number of items in the ring buffer.
+ */
+inline ring_buffer_size_t ring_buffer_num_items(ring_buffer_t *buffer)
+{
+    return ((buffer->head_index - buffer->tail_index) & (buffer->buffer_cap - 1));
+}
+
+/**
+ * @brief 将共享内存结构体指针设置为NULL。如果该指针是最后一个指向该地址的，
+ * 将导致这块地址无法被再次使用或释放（造成内存泄漏），所以应确保对分配的内存进行妥善管理。
+ * 这个函数仅用于与ring_buffer_assign配对使用。如果使用了ring_buffer_new
+ * 进行对象初始化，则需要使用ring_buffer_destroy对对象进行销毁。
+ * @param buffer - 需要解除引用的指针。请注意这是二级指针，需要传递结构体指针的地址。
+ */
+inline void ring_buffer_detach(ring_buffer_t **buffer)
+{
+    *buffer = NULL;
+}
