@@ -1,3 +1,15 @@
+Modified Ring-Buffer
+====================
+原项目：https://github.com/AndersKaloer/Ring-Buffer
+
+对原项目做了扩展，当前支持动态申请内存，也可以支持将申请好的内存绑定到队列中。将队列容量做了扩展，目前可以支持到32767 byte容量。
+在test_ring_buffer.c文件中提供的简单的使用案例。
+如果需要改变队列大小的上限，可以在.h文件中改变RING_BUFFER_SIZE的定义和 typedef uint16_t ring_buffer_size_t;具体方法请看注释。
+
+提供的函数说明请见.h文件。
+
+下附原说明文件。
+
 Ring-Buffer
 ===========
 
